@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.memento-mori" path="/org/gnome/shell/extensions/memento-mori/">
+    <key name="birth-year" type="i">
+      <default>0</default>
+      <summary>Birth Year</summary>
+      <description>Your birth year used to calculate life percentage. Set to 0 to disable life calculation.</description>
+    </key>
+    <key name="life-expectancy" type="i">
+      <default>80</default>
+      <summary>Life Expectancy</summary>
+      <description>Expected lifespan in years used to calculate life percentage.</description>
+    </key>
+  </schema>
+</schemalist>

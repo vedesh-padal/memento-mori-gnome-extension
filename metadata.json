@@ -1,0 +1,14 @@
+{
+  "name": "Memento Mori",
+  "description": "Reminds you how much of the day, month, year and life is left in the menu bar",
+  "url": "https://github.com/vedesh-padal/memento-mori-gnome-extension",
+  "uuid": "memento-mori@vedeshpadal",
+  "settings-schema": "org.gnome.shell.extensions.memento-mori",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48"
+  ],
+  "version": 1
+}
