@@ -9,9 +9,8 @@ A GNOME Shell extension that displays how much of your **day**, **month**, **yea
 
 ## 📸 **Preview**
 
-```
-⏳ 𝗗 45% · 𝗠 16% · 𝗬 1% · 𝗟 27%
-```
+![memento-extension-demo](https://github.com/user-attachments/assets/373c39c2-fe21-4d54-9b18-8ecb5bad79e4)
+
 
 The extension shows:
 - **𝗗** - Day progress (percentage of current day elapsed)
