@@ -16,15 +16,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import St from 'gi://St';
-import GLib from 'gi://GLib';
-import GObject from 'gi://GObject';
-import Clutter from 'gi://Clutter';
-import Gio from 'gi://Gio';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
-import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+/* exported init */
+
+const { St, GLib, GObject, Clutter, Gio } = imports.gi;
+const Main = imports.ui.main;
+const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
+const ExtensionUtils = imports.misc.extensionUtils;
+
+const Me = ExtensionUtils.getCurrentExtension();
 
 // ============================================================================
 // Time Calculation Helpers
@@ -270,9 +270,16 @@ class MetricToggleItem extends PopupMenu.PopupBaseMenuItem {
 // Main Extension Class
 // ============================================================================
 
-export default class MementoMoriExtension extends Extension {
+class MementoMoriExtension {
+  constructor() {
+    this._indicator = null;
+    this._settings = null;
+    this._timeout = null;
+    this._settingsChangedIds = [];
+  }
+
   enable() {
-    this._settings = this.getSettings();
+    this._settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.memento-mori');
     
     // Create the panel indicator
     this._indicator = new PanelMenu.Button(0.0, 'Memento Mori', false);
@@ -409,7 +416,7 @@ export default class MementoMoriExtension extends Extension {
     });
     settingsButton.connect('clicked', () => {
       this._indicator.menu.close();
-      this.openPreferences();
+      ExtensionUtils.openPrefs();
     });
     actionsBox.add_child(settingsButton);
     
@@ -700,8 +707,6 @@ export default class MementoMoriExtension extends Extension {
   }
   
   _notify(title, body) {
-    const style = this._settings.get_int('notification-style');
-    // For now, just use Main.notify. Sound could be added for prominent style.
     Main.notify(`Memento Mori: ${title}`, body);
   }
   
@@ -732,4 +737,12 @@ export default class MementoMoriExtension extends Extension {
     this._countdownLabel = null;
     this._settings = null;
   }
+}
+
+// ============================================================================
+// Extension Entry Point (Legacy GNOME 42-44 style)
+// ============================================================================
+
+function init() {
+  return new MementoMoriExtension();
 }

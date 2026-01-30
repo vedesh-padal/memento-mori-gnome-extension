@@ -1,11 +1,18 @@
 # ⏳ Memento Mori - GNOME Shell Extension
 
+> ⚠️ **This is the legacy branch for GNOME 42-44 (Ubuntu 22.04 LTS)**
+>
+> For GNOME 45+ (Ubuntu 24.04+), use the [`main` branch](https://github.com/vedesh-padal/memento-mori-gnome-extension/tree/main).
+
+---
+
 > _"Remember that you must die"_ ~ Memento Mori
 
 A GNOME Shell extension that displays how much of your **day**, **week**, **month**, **year**, and **life** has passed in the top panel. A gentle reminder to make the most of your time.
 
-![GNOME 49](https://img.shields.io/badge/GNOME-45--49-blue?logo=gnome)
+![GNOME 42-44](https://img.shields.io/badge/GNOME-42--44-orange?logo=gnome)
 ![License](https://img.shields.io/badge/License-GPL--3.0--or--later-green)
+![Status](https://img.shields.io/badge/Status-Community%20maintained-yellow)
 
 ## 📸 Preview
 
@@ -124,10 +131,12 @@ When enabled, metrics change color based on progress:
 
 ## ⚠️ GNOME Compatibility
 
-| GNOME Version | Status             |
-| ------------- | ------------------ |
-| **45 - 49**   | ✅ Fully supported |
-| **< 45**      | ❌ Not supported   |
+This branch supports GNOME 42-44 only. For newer versions, see the `main` branch.
+
+| GNOME Version | Branch                                                                 | Status                  |
+| ------------- | ---------------------------------------------------------------------- | ----------------------- |
+| **45-49**     | [`main`](https://github.com/vedesh-padal/memento-mori-gnome-extension) | ✅ Recommended          |
+| **42-44**     | `legacy-gnome-42-44` (this branch)                                     | ⚠️ Community maintained |
 
 Check your version:
 

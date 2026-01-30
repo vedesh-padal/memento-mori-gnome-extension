@@ -5,11 +5,9 @@
   "uuid": "memento-mori@vedeshpadal",
   "settings-schema": "org.gnome.shell.extensions.memento-mori",
   "shell-version": [
-    "45",
-    "46",
-    "47",
-    "48",
-    "49"
+    "42",
+    "43",
+    "44"
   ],
   "version": 3
 }
