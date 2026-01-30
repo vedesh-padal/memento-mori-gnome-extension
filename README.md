@@ -148,11 +148,19 @@ dconf reset -f /org/gnome/shell/extensions/memento-mori/
 
 ```
 memento-mori@vedeshpadal/
-├── extension.js      # Main extension logic with PopupMenu
-├── prefs.js          # Multi-page preferences UI
-├── metadata.json     # Extension metadata
-├── stylesheet.css    # Styling for panel and dropdown
-├── schemas/          # GSettings schema
+├── extension.js          # Main extension entry point
+├── prefs.js              # Preferences entry point
+├── metadata.json         # Extension metadata
+├── stylesheet.css        # Styling for panel and dropdown
+├── install.sh            # One-command installation script
+├── build-zip.sh          # Build zip for GNOME Extensions upload
+├── lib/                  # Core utilities
+│   ├── calculations.js   # Time and progress calculations
+│   ├── widgets.js        # Custom UI widgets (MetricToggleItem)
+│   └── notifications.js  # Notification handling
+├── ui/                   # UI builders
+│   └── prefsPages.js     # Preferences page builders
+├── schemas/              # GSettings schema
 │   └── org.gnome.shell.extensions.memento-mori.gschema.xml
 └── README.md
 ```
