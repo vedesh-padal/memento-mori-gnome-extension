@@ -1,15 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.memento-mori" path="/org/gnome/shell/extensions/memento-mori/">
+    
+    <!-- General Settings -->
+    <key name="update-interval" type="i">
+      <default>60</default>
+      <summary>Update Interval</summary>
+      <description>How often to update the display in seconds.</description>
+    </key>
+    <key name="panel-position" type="i">
+      <default>2</default>
+      <summary>Panel Position</summary>
+      <description>Position in panel: 0=left, 1=center, 2=right.</description>
+    </key>
+
+    <!-- Personal Settings -->
+    <key name="configured" type="b">
+      <default>false</default>
+      <summary>Configured</summary>
+      <description>Whether the extension has been configured by the user.</description>
+    </key>
     <key name="birth-year" type="i">
-      <default>0</default>
+      <default>1950</default>
       <summary>Birth Year</summary>
-      <description>Your birth year used to calculate life percentage. Set to 0 to disable life calculation.</description>
+      <description>Your birth year used to calculate life percentage.</description>
+    </key>
+    <key name="birth-month" type="i">
+      <default>0</default>
+      <summary>Birth Month</summary>
+      <description>Your birth month (1-12, 0=not set).</description>
+    </key>
+    <key name="birth-day" type="i">
+      <default>0</default>
+      <summary>Birth Day</summary>
+      <description>Your birth day (1-31, 0=not set).</description>
     </key>
     <key name="life-expectancy" type="i">
       <default>80</default>
       <summary>Life Expectancy</summary>
       <description>Expected lifespan in years used to calculate life percentage.</description>
     </key>
+
+    <!-- Display Settings - Which Metrics to Show in Panel -->
+    <key name="show-day" type="b">
+      <default>true</default>
+      <summary>Show Day</summary>
+      <description>Show day progress in panel.</description>
+    </key>
+    <key name="show-week" type="b">
+      <default>true</default>
+      <summary>Show Week</summary>
+      <description>Show week progress in panel.</description>
+    </key>
+    <key name="show-month" type="b">
+      <default>true</default>
+      <summary>Show Month</summary>
+      <description>Show month progress in panel.</description>
+    </key>
+    <key name="show-year" type="b">
+      <default>true</default>
+      <summary>Show Year</summary>
+      <description>Show year progress in panel.</description>
+    </key>
+    <key name="show-life" type="b">
+      <default>true</default>
+      <summary>Show Life</summary>
+      <description>Show life progress in panel.</description>
+    </key>
+
+    <!-- Display Settings - "Time Left" Suffix in Panel -->
+    <key name="show-left-day" type="b">
+      <default>false</default>
+      <summary>Show Time Left for Day</summary>
+      <description>Show time remaining alongside day percentage.</description>
+    </key>
+    <key name="show-left-week" type="b">
+      <default>false</default>
+      <summary>Show Time Left for Week</summary>
+      <description>Show time remaining alongside week percentage.</description>
+    </key>
+    <key name="show-left-month" type="b">
+      <default>false</default>
+      <summary>Show Time Left for Month</summary>
+      <description>Show time remaining alongside month percentage.</description>
+    </key>
+    <key name="show-left-year" type="b">
+      <default>false</default>
+      <summary>Show Time Left for Year</summary>
+      <description>Show time remaining alongside year percentage.</description>
+    </key>
+    <key name="show-left-life" type="b">
+      <default>false</default>
+      <summary>Show Time Left for Life</summary>
+      <description>Show time remaining alongside life percentage.</description>
+    </key>
+
+    <!-- Display Settings - Panel Format -->
+    <key name="panel-format" type="i">
+      <default>0</default>
+      <summary>Panel Display Format</summary>
+      <description>Format in panel: 0=percentage, 1=time left.</description>
+    </key>
+
+    <!-- Display Settings - Color Coding -->
+    <key name="color-code-life" type="b">
+      <default>false</default>
+      <summary>Color Code Life</summary>
+      <description>Use color coding for life percentage (green/yellow/red).</description>
+    </key>
+    <key name="color-code-day" type="b">
+      <default>false</default>
+      <summary>Color Code Day</summary>
+      <description>Use color coding for day percentage (productivity reminder).</description>
+    </key>
+
+    <!-- Display Settings - Dropdown Format -->
+    <key name="dropdown-format" type="i">
+      <default>0</default>
+      <summary>Dropdown Display Format</summary>
+      <description>Format in dropdown: 0=percentage, 1=ratio, 2=time left.</description>
+    </key>
+
+    <!-- Event Countdown Settings -->
+    <key name="countdown-type" type="i">
+      <default>0</default>
+      <summary>Countdown Type</summary>
+      <description>Event countdown type: 0=none, 1=birthday, 2=custom event.</description>
+    </key>
+    <key name="custom-event-name" type="s">
+      <default>''</default>
+      <summary>Custom Event Name</summary>
+      <description>Name of the custom event to count down to.</description>
+    </key>
+    <key name="custom-event-month" type="i">
+      <default>1</default>
+      <summary>Custom Event Month</summary>
+      <description>Month of the custom event (1-12).</description>
+    </key>
+    <key name="custom-event-day" type="i">
+      <default>1</default>
+      <summary>Custom Event Day</summary>
+      <description>Day of the custom event (1-31).</description>
+    </key>
+    <key name="custom-event-text" type="s">
+      <default>'🎊 {days} days until the event!'</default>
+      <summary>Custom Event Text</summary>
+      <description>Display text for custom event. Use {days} as placeholder.</description>
+    </key>
+
+    <!-- Notification Settings -->
+    <key name="enable-notifications" type="b">
+      <default>false</default>
+      <summary>Enable Notifications</summary>
+      <description>Enable milestone notifications.</description>
+    </key>
+    <key name="notify-quarterly" type="b">
+      <default>true</default>
+      <summary>Quarterly Notifications</summary>
+      <description>Notify on quarterly year progress (Jan, Apr, Jul, Oct).</description>
+    </key>
+    <key name="notify-birthday" type="b">
+      <default>false</default>
+      <summary>Birthday Notification</summary>
+      <description>Notify on birthday.</description>
+    </key>
+    <key name="notification-style" type="i">
+      <default>0</default>
+      <summary>Notification Style</summary>
+      <description>Notification style: 0=subtle, 1=prominent.</description>
+    </key>
+    <key name="notified-milestones" type="as">
+      <default>[]</default>
+      <summary>Notified Milestones</summary>
+      <description>List of already notified milestones to prevent duplicates.</description>
+    </key>
+
   </schema>
 </schemalist>
