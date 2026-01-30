@@ -1,142 +1,172 @@
 # ⏳ Memento Mori - GNOME Shell Extension
 
-> *"Remember that you must die"* ~ Memento Mori
+> _"Remember that you must die"_ ~ Memento Mori
 
-A GNOME Shell extension that displays how much of your **day**, **month**, **year**, and **life** has passed in the top panel. A gentle reminder to make the most of your time.
+A GNOME Shell extension that displays how much of your **day**, **week**, **month**, **year**, and **life** has passed in the top panel. A gentle reminder to make the most of your time.
 
-![GNOME 48](https://img.shields.io/badge/GNOME-45--48-blue?logo=gnome)
+![GNOME 49](https://img.shields.io/badge/GNOME-45--49-blue?logo=gnome)
 ![License](https://img.shields.io/badge/License-GPL--3.0--or--later-green)
 
-## 📸 **Preview**
+## 📸 Preview
 
-![memento-extension-demo](https://github.com/user-attachments/assets/373c39c2-fe21-4d54-9b18-8ecb5bad79e4)
+The extension shows progress for:
 
+- **𝗗** Day · **𝗪** Week · **𝗠** Month · **𝗬** Year · **𝗟** Life
 
-The extension shows:
-- **𝗗** - Day progress (percentage of current day elapsed)
-- **𝗠** - Month progress (percentage of current month elapsed)
-- **𝗬** - Year progress (percentage of current year elapsed)
-- **𝗟** - Life progress (percentage of expected lifespan elapsed)
+**Panel Display (Percentage mode):**
+
+```
+⏳ 𝗗 65% · 𝗪 50% · 𝗠 45% · 𝗬 8% · 𝗟 27%
+```
+
+**Panel Display (Time Left mode):**
+
+```
+⏳ (time left) 𝗗 8h · 𝗪 3d · 𝗠 16d · 𝗬 336d · 𝗟 58 yrs
+```
+
+**Dropdown Menu (click to expand):**
+
+- Toggle which metrics appear in the panel
+- Visual progress bars for each metric
+- Event countdown (birthday or custom)
+- Quick access to settings
 
 ## 🚀 Installation
 
-### Method 1: Manual Installation (Recommended for now)
+### From GNOME Extensions (Recommended)
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/vedesh-padal/memento-mori-gnome-extension.git
-   ```
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg" height="100">](https://extensions.gnome.org/extension/9136/memento-mori/)
 
-2. **Copy to GNOME extensions directory:**
-   ```bash
-   mkdir -p ~/.local/share/gnome-shell/extensions/memento-mori@vedeshpadal
-   cp -r memento-mori-gnome-extension/* ~/.local/share/gnome-shell/extensions/memento-mori@vedeshpadal/
-   ```
+### Manual Installation
 
-3. **Restart GNOME Shell:**
-   - On **X11**: Press `Alt + F2`, type `r`, and press Enter
-   - On **Wayland**: Log out and log back in
+```bash
+git clone https://github.com/vedesh-padal/memento-mori-gnome-extension.git
+cd memento-mori-gnome-extension/memento-mori@vedeshpadal
+./install.sh
+```
 
-4. **Enable the extension:**
-   - Using GNOME Extensions app or Extension Manager
-   - Or via terminal:
-     ```bash
-     gnome-extensions enable memento-mori@vedeshpadal
-     ```
+Then restart GNOME Shell:
 
-### NOTE
+- **Wayland**: Log out and log back in
+- **X11**: Press `Alt + F2`, type `r`, press Enter
 
-Wating for approval of this extension on [extensions.gnome.org](https://extensions.gnome.org), will add those steps once approved 🙂
+Enable the extension (choose one):
+
+- **GUI**: Open [GNOME Extension Manager](https://github.com/mjakeman/extension-manager) and enable "Memento Mori"
+- **Command**: `gnome-extensions enable memento-mori@vedeshpadal`
+
+## ✨ Features
+
+| Feature                   | Description                                           |
+| ------------------------- | ----------------------------------------------------- |
+| **Multiple Metrics**      | Day, Week, Month, Year, and Life progress             |
+| **Display Formats**       | Choose Percentage or Time Left mode for panel         |
+| **Time Left Suffix**      | Optionally show remaining time next to percentage     |
+| **Color Coding**          | Optional color indicators for Life and Day metrics    |
+| **Dropdown Menu**         | Click to see progress bars and toggle metrics         |
+| **Event Countdown**       | Birthday countdown or custom event with emoji support |
+| **Notifications**         | Quarterly progress and birthday reminders             |
+| **Panel Position**        | Left, Center, or Right placement                      |
+| **Configurable Interval** | Update frequency from 10 to 300 seconds               |
 
 ## ⚙️ Configuration
 
-After installing the extension, configure it through **GNOME Extensions** or **Extension Manager**:
+Open extension settings via:
 
-1. Open **GNOME Extensions** app or **Extension Manager**
-2. Find **Memento Mori** in the list
-3. Click the ⚙️ (settings/gear) icon
-4. Set your **Birth Year** and **Life Expectancy**
+- **GNOME Extensions** app or **Extension Manager**
+- Click the extension in the panel → **⚙️ Settings**
 
-Until you set your birth year, the extension will display `⏳ memento mori.` and hovering over it will prompt you to configure the settings.
+### Settings Pages
 
-## ⚠️ Important Caveats
+| Page              | Options                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| **General**       | Update interval, panel position, display format, color coding, time left suffix toggles |
+| **Personal**      | Birth year/month/day, life expectancy, enable time tracking                             |
+| **Events**        | Birthday countdown or custom event (name, date, display text with `{days}` placeholder) |
+| **Notifications** | Quarterly year progress, birthday reminder, notification style (subtle/prominent)       |
+| **About**         | Version info and GitHub link                                                            |
 
-### GNOME Version Compatibility
+### Display Format Options
 
-| GNOME Version | Compatibility |
-|---------------|---------------|
-| **45 - 48** | ✅ Fully supported |
-| **< 45** | ❌ Not supported (uses legacy import system) |
+**Panel (Collapsed):**
 
-This extension uses the modern ES Module syntax and Extension class API introduced in GNOME 45. It is **not compatible** with GNOME 44 and below.
+- **Percentage**: `𝗗 65% · 𝗟 27%`
+- **Time Left**: `(time left) 𝗗 8h · 𝗟 58 yrs`
 
-### Check Your GNOME Version
+**Dropdown (Expanded):**
+
+- **Percentage**: `65%`
+- **Ratio**: `15h / 24h`
+- **Time Left**: `8h left`
+
+### Color Coding
+
+When enabled, metrics change color based on progress:
+
+| Metric   | Green | Yellow | Red     |
+| -------- | ----- | ------ | ------- |
+| **Life** | 0-33% | 34-66% | 67-100% |
+| **Day**  | 0-50% | 51-75% | 76-100% |
+
+## ⚠️ GNOME Compatibility
+
+| GNOME Version | Status             |
+| ------------- | ------------------ |
+| **45 - 49**   | ✅ Fully supported |
+| **< 45**      | ❌ Not supported   |
+
+Check your version:
 
 ```bash
 gnome-shell --version
 ```
 
-## ️ Project Structure
-
-```
-memento-mori@vedeshpadal/
-├── extension.js      # Main extension logic
-├── prefs.js          # Preferences/settings UI
-├── metadata.json     # Extension metadata
-├── stylesheet.css    # Styling
-├── schemas/          # GSettings schema
-│   └── org.gnome.shell.extensions.memento-mori.gschema.xml
-└── README.md         # This file
-```
-
 ## 🛠️ Development
+
+### View Logs
+
+```bash
+journalctl -f -o cat /usr/bin/gnome-shell
+```
 
 ### Testing Changes
 
-1. Make your changes to `extension.js`
-2. Restart GNOME Shell:
-   - X11: `Alt + F2` → `r` → Enter
-   - Wayland: Log out and log back in
-3. Check for errors:
-   ```bash
-   journalctl -f -o cat /usr/bin/gnome-shell
-   ```
+1. Make your changes to the source files
+2. Compile schemas if modified: `glib-compile-schemas schemas/`
+3. Restart GNOME Shell (log out/in on Wayland)
+4. Check logs for errors
 
-### Debugging
+### Reset Settings
 
-View extension logs:
 ```bash
-journalctl -f -o cat GNOME_SHELL_EXTENSION_UUID=memento-mori@vedeshpadal
+# Reset all extension settings to defaults
+dconf reset -f /org/gnome/shell/extensions/memento-mori/
 ```
 
-Or use Looking Glass (`Alt + F2` → `lg` → Enter) on X11.
+## 📁 Project Structure
+
+```
+memento-mori@vedeshpadal/
+├── extension.js      # Main extension logic with PopupMenu
+├── prefs.js          # Multi-page preferences UI
+├── metadata.json     # Extension metadata
+├── stylesheet.css    # Styling for panel and dropdown
+├── schemas/          # GSettings schema
+│   └── org.gnome.shell.extensions.memento-mori.gschema.xml
+└── README.md
+```
 
 ## 🙏 Credits
 
-This extension is heavily inspired by and based on the excellent blog post by **Pankaj Tanwar**:
-
-**[I built a gnome shell extension to show how much my day, month, year and life has passed](https://www.pankajtanwar.in/blog/i-built-a-gnome-shell-extension-to-show-how-much-my-day-month-year-and-life-has-passed)**
-
-The original implementation and the core logic for calculating time percentages comes from Pankaj's work. I've made minor visual changes to the display format (using `⏳ 𝗗 · 𝗠 · 𝗬 · 𝗟` instead of `Day:, Month:, Year:, Life:`) and updated the code to work with GNOME 48's (actually works with >= 46) modern ES Module syntax.
-
-Follow Pankaj on:
-- GitHub: [@pankajtanwarbanna](https://github.com/pankajtanwarbanna/)
-- Twitter/X: [@the2ndfloorguy](https://twitter.com/the2ndfloorguy)
-
-## 📚 Resources
-
-- [GNOME Shell Extensions Guide](https://gjs.guide/extensions/)
-- [GJS Documentation](https://gjs.guide/)
-- [GNOME Extensions Website](https://extensions.gnome.org/)
-- [Extension Manager](https://github.com/mjakeman/extension-manager)
-- [Mr. Just Perfection (YouTube)](https://www.youtube.com/@jperfection) - Great tutorials for GNOME extension development
+Inspired by [Pankaj Tanwar's blog post](https://www.pankajtanwar.in/blog/i-built-a-gnome-shell-extension-to-show-how-much-my-day-month-year-and-life-has-passed).
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3.0 or later** - see the [LICENSE](LICENSE) file for details.
+**GNU General Public License v3.0 or later** - see [LICENSE](LICENSE).
 
 ---
 
 Made with 💀 by [Vedesh Padal](https://github.com/vedesh-padal)
 
-*Remember: Time is finite. Use it wisely.*
+**Remember: Time is finite. Use it wisely.**
