@@ -62,7 +62,9 @@ function calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy) {
   const secondsElapsedToday = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
   const dayPercent = Math.floor((secondsElapsedToday / secondsInDay) * 100);
   const dayHoursElapsed = Math.floor(secondsElapsedToday / 3600);
-  const dayHoursLeft = 24 - dayHoursElapsed;
+  const daySecondsLeft = secondsInDay - secondsElapsedToday;
+  const dayHoursLeft = Math.floor(daySecondsLeft / 3600);
+  const dayMinutesLeft = Math.floor(daySecondsLeft / 60);
 
   // Week progress (week starts on Sunday)
   const dayOfWeek = now.getDay();
@@ -70,7 +72,9 @@ function calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy) {
   const secondsElapsedThisWeek = dayOfWeek * 24 * 3600 + secondsElapsedToday;
   const weekPercent = Math.floor((secondsElapsedThisWeek / secondsInWeek) * 100);
   const weekDaysElapsed = dayOfWeek;
-  const weekDaysLeft = 7 - dayOfWeek;
+  const weekSecondsLeft = secondsInWeek - secondsElapsedThisWeek;
+  const weekDaysLeft = Math.floor(weekSecondsLeft / 86400);
+  const weekHoursLeft = Math.floor(weekSecondsLeft / 3600);
 
   // Month progress
   const firstDayOfMonth = new Date(currentYear, now.getMonth(), 1);
@@ -79,7 +83,9 @@ function calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy) {
   const monthPercent = Math.floor((secondsElapsedThisMonth / totalSecondsInMonth) * 100);
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
   const monthDaysElapsed = now.getDate();
-  const monthDaysLeft = daysInMonth - monthDaysElapsed;
+  const monthSecondsLeft = totalSecondsInMonth - secondsElapsedThisMonth;
+  const monthDaysLeft = Math.floor(monthSecondsLeft / 86400);
+  const monthHoursLeft = Math.floor(monthSecondsLeft / 3600);
 
   // Year progress
   const firstDayOfYear = new Date(currentYear, 0, 1);
@@ -88,7 +94,9 @@ function calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy) {
   const yearPercent = Math.floor((secondsElapsedThisYear / totalSecondsInYear) * 100);
   const daysInYear = getDaysInYear(currentYear);
   const yearDayNumber = Math.floor(secondsElapsedThisYear / 86400) + 1;
-  const yearDaysLeft = daysInYear - yearDayNumber;
+  const yearSecondsLeft = totalSecondsInYear - secondsElapsedThisYear;
+  const yearDaysLeft = Math.floor(yearSecondsLeft / 86400);
+  const yearHoursLeft = Math.floor(yearSecondsLeft / 3600);
 
   // Life progress
   const birthDate = new Date(birthYear, (birthMonth || 1) - 1, birthDay || 1);
@@ -98,42 +106,59 @@ function calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy) {
   const yearsLived = Math.floor(secondsLived / (365.25 * 24 * 60 * 60));
   const yearsLeft = lifeExpectancy - yearsLived;
 
+  // Smart contextual units for "left" display
+  // Day: show minutes if < 1 hour left, otherwise hours
+  const dayLeftValue = dayHoursLeft < 1 ? dayMinutesLeft : dayHoursLeft;
+  const dayLeftUnit = dayHoursLeft < 1 ? 'm' : 'h';
+  
+  // Week: show hours if < 1 day left, otherwise days
+  const weekLeftValue = weekDaysLeft < 1 ? weekHoursLeft : weekDaysLeft;
+  const weekLeftUnit = weekDaysLeft < 1 ? 'h' : 'd';
+  
+  // Month: show hours if < 1 day left, otherwise days
+  const monthLeftValue = monthDaysLeft < 1 ? monthHoursLeft : monthDaysLeft;
+  const monthLeftUnit = monthDaysLeft < 1 ? 'h' : 'd';
+  
+  // Year: show hours if < 1 day left, otherwise days
+  const yearLeftValue = yearDaysLeft < 1 ? yearHoursLeft : yearDaysLeft;
+  const yearLeftUnit = yearDaysLeft < 1 ? 'h' : 'd';
+
   return {
     day: {
       percent: dayPercent,
       elapsed: dayHoursElapsed,
-      left: dayHoursLeft,
+      left: dayLeftValue,
       total: 24,
-      unit: 'h',
+      unit: dayLeftUnit,
       ratioText: `${dayHoursElapsed}h / 24h`,
-      leftText: `${dayHoursLeft}h left`,
+      leftText: `${dayLeftValue}${dayLeftUnit} left`,
     },
     week: {
       percent: weekPercent,
       elapsed: weekDaysElapsed,
-      left: weekDaysLeft,
+      left: weekLeftValue,
       total: 7,
-      unit: 'd',
+      unit: weekLeftUnit,
       ratioText: `${weekDaysElapsed}d / 7d`,
-      leftText: `${weekDaysLeft}d left`,
+      leftText: `${weekLeftValue}${weekLeftUnit} left`,
     },
     month: {
       percent: monthPercent,
       elapsed: monthDaysElapsed,
-      left: monthDaysLeft,
+      left: monthLeftValue,
       total: daysInMonth,
-      unit: 'd',
+      unit: monthLeftUnit,
       ratioText: `${monthDaysElapsed}d / ${daysInMonth}d`,
-      leftText: `${monthDaysLeft}d left`,
+      leftText: `${monthLeftValue}${monthLeftUnit} left`,
     },
     year: {
       percent: yearPercent,
       elapsed: yearDayNumber,
-      left: yearDaysLeft,
+      left: yearLeftValue,
       total: daysInYear,
-      unit: 'd',
+      unit: yearLeftUnit,
       ratioText: `Day ${yearDayNumber} / ${daysInYear}`,
-      leftText: `${yearDaysLeft}d left`,
+      leftText: `${yearLeftValue}${yearLeftUnit} left`,
     },
     life: {
       percent: Math.min(lifePercent, 100),
