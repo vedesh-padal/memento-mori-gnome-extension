@@ -1,15 +1,71 @@
-/* Memento Mori Extension Styling */
-.memento-mori-label {
-    font-weight: bold;
-    font-size: 12px;
-    color: #f5f5f5;
+/* Memento Mori Extension Stylesheet */
+
+/* Panel label color classes for Life metric */
+.memento-mori-life-green {
+  color: #73d216 !important;
 }
 
+.memento-mori-life-yellow {
+  color: #edd400 !important;
+}
+
+.memento-mori-life-red {
+  color: #ef2929 !important;
+}
+
+/* Dropdown menu styling */
+.memento-mori-header {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.memento-mori-metric-symbol {
+  font-weight: bold;
+  min-width: 24px;
+  margin-left: 8px;
+}
+
+.memento-mori-metric-label {
+  margin-left: 8px;
+  min-width: 50px;
+}
+
+.memento-mori-progress-bar {
+  font-family: monospace;
+  margin-left: 12px;
+  margin-right: 8px;
+  color: #888;
+}
+
+.memento-mori-metric-value {
+  min-width: 100px;
+  text-align: right;
+}
+
+.memento-mori-countdown {
+  font-style: italic;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.memento-mori-actions-box {
+  padding: 8px 12px;
+}
+
+.memento-mori-action-button {
+  padding: 6px 16px;
+  border-radius: 6px;
+}
+
+.memento-mori-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tooltip styling (for unconfigured state) */
 .memento-mori-tooltip {
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #ffffff;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 500;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9em;
 }
