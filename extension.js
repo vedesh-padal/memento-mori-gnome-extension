@@ -18,253 +18,21 @@
 
 import St from 'gi://St';
 import GLib from 'gi://GLib';
-import GObject from 'gi://GObject';
 import Clutter from 'gi://Clutter';
-import Gio from 'gi://Gio';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-// ============================================================================
-// Time Calculation Helpers
-// ============================================================================
-
-function getSecondsInYear(year) {
-  const daysInYear = (year % 4 === 0 && year % 100 > 0) || year % 400 === 0 ? 366 : 365;
-  return daysInYear * 24 * 60 * 60;
-}
-
-function getDaysInYear(year) {
-  return (year % 4 === 0 && year % 100 > 0) || year % 400 === 0 ? 366 : 365;
-}
-
-function getSecondsInMonth(month, year) {
-  const daysInMonth = new Date(year, month, 0).getDate();
-  return daysInMonth * 24 * 60 * 60;
-}
-
-function getDaysInMonth(month, year) {
-  return new Date(year, month, 0).getDate();
-}
-
-// ============================================================================
-// Progress Calculations
-// ============================================================================
-
-function calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy) {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1;
-
-  // Day progress
-  const secondsInDay = 24 * 60 * 60;
-  const secondsElapsedToday = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-  const dayPercent = Math.floor((secondsElapsedToday / secondsInDay) * 100);
-  const dayHoursElapsed = Math.floor(secondsElapsedToday / 3600);
-  const dayHoursLeft = 24 - dayHoursElapsed;
-
-  // Week progress (week starts on Sunday)
-  const dayOfWeek = now.getDay();
-  const secondsInWeek = 7 * 24 * 60 * 60;
-  const secondsElapsedThisWeek = dayOfWeek * 24 * 3600 + secondsElapsedToday;
-  const weekPercent = Math.floor((secondsElapsedThisWeek / secondsInWeek) * 100);
-  const weekDaysElapsed = dayOfWeek;
-  const weekDaysLeft = 7 - dayOfWeek;
-
-  // Month progress
-  const firstDayOfMonth = new Date(currentYear, now.getMonth(), 1);
-  const secondsElapsedThisMonth = (now - firstDayOfMonth) / 1000;
-  const totalSecondsInMonth = getSecondsInMonth(currentMonth, currentYear);
-  const monthPercent = Math.floor((secondsElapsedThisMonth / totalSecondsInMonth) * 100);
-  const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-  const monthDaysElapsed = now.getDate();
-  const monthDaysLeft = daysInMonth - monthDaysElapsed;
-
-  // Year progress
-  const firstDayOfYear = new Date(currentYear, 0, 1);
-  const secondsElapsedThisYear = (now - firstDayOfYear) / 1000;
-  const totalSecondsInYear = getSecondsInYear(currentYear);
-  const yearPercent = Math.floor((secondsElapsedThisYear / totalSecondsInYear) * 100);
-  const daysInYear = getDaysInYear(currentYear);
-  const yearDayNumber = Math.floor(secondsElapsedThisYear / 86400) + 1;
-  const yearDaysLeft = daysInYear - yearDayNumber;
-
-  // Life progress
-  const birthDate = new Date(birthYear, (birthMonth || 1) - 1, birthDay || 1);
-  const secondsLived = (now - birthDate) / 1000;
-  const totalLifeSeconds = lifeExpectancy * 365.25 * 24 * 60 * 60;
-  const lifePercent = Math.floor((secondsLived / totalLifeSeconds) * 100);
-  const yearsLived = Math.floor(secondsLived / (365.25 * 24 * 60 * 60));
-  const yearsLeft = lifeExpectancy - yearsLived;
-
-  return {
-    day: {
-      percent: dayPercent,
-      elapsed: dayHoursElapsed,
-      left: dayHoursLeft,
-      total: 24,
-      unit: 'h',
-      ratioText: `${dayHoursElapsed}h / 24h`,
-      leftText: `${dayHoursLeft}h left`,
-    },
-    week: {
-      percent: weekPercent,
-      elapsed: weekDaysElapsed,
-      left: weekDaysLeft,
-      total: 7,
-      unit: 'd',
-      ratioText: `${weekDaysElapsed}d / 7d`,
-      leftText: `${weekDaysLeft}d left`,
-    },
-    month: {
-      percent: monthPercent,
-      elapsed: monthDaysElapsed,
-      left: monthDaysLeft,
-      total: daysInMonth,
-      unit: 'd',
-      ratioText: `${monthDaysElapsed}d / ${daysInMonth}d`,
-      leftText: `${monthDaysLeft}d left`,
-    },
-    year: {
-      percent: yearPercent,
-      elapsed: yearDayNumber,
-      left: yearDaysLeft,
-      total: daysInYear,
-      unit: 'd',
-      ratioText: `Day ${yearDayNumber} / ${daysInYear}`,
-      leftText: `${yearDaysLeft}d left`,
-    },
-    life: {
-      percent: Math.min(lifePercent, 100),
-      elapsed: yearsLived,
-      left: Math.max(yearsLeft, 0),
-      total: lifeExpectancy,
-      unit: 'yrs',
-      ratioText: `${yearsLived} yrs / ${lifeExpectancy} yrs`,
-      leftText: `${Math.max(yearsLeft, 0)} yrs left`,
-    },
-  };
-}
-
-// ============================================================================
-// Progress Bar Helper
-// ============================================================================
-
-function createProgressBar(percent, width = 10) {
-  const filled = Math.round((percent / 100) * width);
-  const empty = width - filled;
-  return '▓'.repeat(filled) + '░'.repeat(empty);
-}
-
-// ============================================================================
-// Color Coding Helper
-// ============================================================================
-
-function getLifeColorClass(percent) {
-  if (percent <= 33) return 'memento-mori-life-green';
-  if (percent <= 66) return 'memento-mori-life-yellow';
-  return 'memento-mori-life-red';
-}
-
-function getDayColorClass(percent) {
-  if (percent <= 50) return 'memento-mori-life-green';
-  if (percent <= 75) return 'memento-mori-life-yellow';
-  return 'memento-mori-life-red';
-}
-
-// ============================================================================
-// Days Until Event Helper
-// ============================================================================
-
-function getDaysUntilEvent(month, day) {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  let eventDate = new Date(currentYear, month - 1, day);
-  
-  // If the event has passed this year, calculate for next year
-  if (eventDate < now) {
-    eventDate = new Date(currentYear + 1, month - 1, day);
-  }
-  
-  const diffTime = eventDate - now;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
-}
-
-// ============================================================================
-// Metric Toggle Menu Item
-// ============================================================================
-
-const MetricToggleItem = GObject.registerClass(
-class MetricToggleItem extends PopupMenu.PopupBaseMenuItem {
-  _init(label, symbol, settings, settingKey, params) {
-    super._init(params);
-    
-    this._settings = settings;
-    this._settingKey = settingKey;
-    
-    // Checkbox
-    this._check = new St.Icon({
-      icon_name: 'emblem-ok-symbolic',
-      style_class: 'popup-menu-icon',
-    });
-    this.add_child(this._check);
-    
-    // Symbol
-    this._symbol = new St.Label({
-      text: symbol,
-      style_class: 'memento-mori-metric-symbol',
-      y_align: Clutter.ActorAlign.CENTER,
-    });
-    this.add_child(this._symbol);
-    
-    // Label
-    this._label = new St.Label({
-      text: label,
-      style_class: 'memento-mori-metric-label',
-      y_align: Clutter.ActorAlign.CENTER,
-      x_expand: true,
-    });
-    this.add_child(this._label);
-    
-    // Progress bar
-    this._progressBar = new St.Label({
-      text: '░░░░░░░░░░',
-      style_class: 'memento-mori-progress-bar',
-      y_align: Clutter.ActorAlign.CENTER,
-    });
-    this.add_child(this._progressBar);
-    
-    // Value
-    this._value = new St.Label({
-      text: '0%',
-      style_class: 'memento-mori-metric-value',
-      y_align: Clutter.ActorAlign.CENTER,
-    });
-    this.add_child(this._value);
-    
-    this._updateCheckVisibility();
-  }
-  
-  _updateCheckVisibility() {
-    const isEnabled = this._settings.get_boolean(this._settingKey);
-    this._check.opacity = isEnabled ? 255 : 0;
-  }
-  
-  activate(event) {
-    const current = this._settings.get_boolean(this._settingKey);
-    this._settings.set_boolean(this._settingKey, !current);
-    this._updateCheckVisibility();
-    // Don't close the menu
-    return Clutter.EVENT_STOP;
-  }
-  
-  updateProgress(percent, displayText) {
-    this._progressBar.text = createProgressBar(percent);
-    this._value.text = displayText;
-  }
-});
+// Local imports
+import {
+  calculateAllProgress,
+  getDaysUntilEvent,
+  getLifeColorClass,
+  getDayColorClass,
+} from './lib/calculations.js';
+import { MetricToggleItem } from './lib/widgets.js';
+import { checkNotifications } from './lib/notifications.js';
 
 // ============================================================================
 // Main Extension Class
@@ -331,7 +99,7 @@ export default class MementoMoriExtension extends Extension {
     const interval = this._settings.get_int('update-interval');
     this._timeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, interval, () => {
       this._updateDisplay();
-      this._checkNotifications();
+      checkNotifications(this._settings);
       return GLib.SOURCE_CONTINUE;
     });
   }
@@ -650,59 +418,6 @@ export default class MementoMoriExtension extends Extension {
       const displayText = eventText.replace('{days}', days.toString());
       this._countdownLabel.text = displayText;
     }
-  }
-  
-  _checkNotifications() {
-    if (!this._settings.get_boolean('enable-notifications')) return;
-    
-    const notified = this._settings.get_strv('notified-milestones');
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
-    const currentDay = now.getDate();
-    
-    // Quarterly notifications (Jan 1, Apr 1, Jul 1, Oct 1)
-    if (this._settings.get_boolean('notify-quarterly')) {
-      const quarterStarts = [
-        { month: 1, day: 1, quarter: 'Q1' },
-        { month: 4, day: 1, quarter: 'Q2' },
-        { month: 7, day: 1, quarter: 'Q3' },
-        { month: 10, day: 1, quarter: 'Q4' },
-      ];
-      
-      for (const q of quarterStarts) {
-        if (currentMonth === q.month && currentDay === q.day) {
-          const key = `quarterly-${currentYear}-${q.quarter}`;
-          if (!notified.includes(key)) {
-            const percent = Math.floor(((q.month - 1) / 12) * 100);
-            this._notify(`${q.quarter} starts!`, `${percent}% of ${currentYear} complete.`);
-            this._settings.set_strv('notified-milestones', [...notified, key]);
-          }
-        }
-      }
-    }
-    
-    // Birthday notification
-    if (this._settings.get_boolean('notify-birthday')) {
-      const birthMonth = this._settings.get_int('birth-month');
-      const birthDay = this._settings.get_int('birth-day');
-      
-      if (birthMonth !== 0 && birthDay !== 0) {
-        if (currentMonth === birthMonth && currentDay === birthDay) {
-          const key = `birthday-${currentYear}`;
-          if (!notified.includes(key)) {
-            this._notify('Happy Birthday! 🎂', 'Wishing you a wonderful day!');
-            this._settings.set_strv('notified-milestones', [...notified, key]);
-          }
-        }
-      }
-    }
-  }
-  
-  _notify(title, body) {
-    const style = this._settings.get_int('notification-style');
-    // For now, just use Main.notify. Sound could be added for prominent style.
-    Main.notify(`Memento Mori: ${title}`, body);
   }
   
   disable() {
