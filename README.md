@@ -40,34 +40,21 @@ The extension shows progress for:
 
 ### Manual Installation
 
-1. **Clone the repository:**
+```bash
+git clone https://github.com/vedesh-padal/memento-mori-gnome-extension.git
+cd memento-mori-gnome-extension/memento-mori@vedeshpadal
+./install.sh
+```
 
-   ```bash
-   git clone https://github.com/vedesh-padal/memento-mori-gnome-extension.git
-   ```
+Then restart GNOME Shell:
 
-2. **Copy to GNOME extensions directory:**
+- **Wayland**: Log out and log back in
+- **X11**: Press `Alt + F2`, type `r`, press Enter
 
-   ```bash
-   mkdir -p ~/.local/share/gnome-shell/extensions/
-   cp -r memento-mori-gnome-extension/memento-mori@vedeshpadal ~/.local/share/gnome-shell/extensions/
-   ```
+Enable the extension (choose one):
 
-3. **Compile the schemas:**
-
-   ```bash
-   cd ~/.local/share/gnome-shell/extensions/memento-mori@vedeshpadal/schemas
-   glib-compile-schemas .
-   ```
-
-4. **Restart GNOME Shell:**
-   - On **Wayland**: Log out and log back in
-   - On **X11**: Press `Alt + F2`, type `r`, and press Enter
-
-5. **Enable the extension:**
-   ```bash
-   gnome-extensions enable memento-mori@vedeshpadal
-   ```
+- **GUI**: Open [GNOME Extension Manager](https://github.com/mjakeman/extension-manager) and enable "Memento Mori"
+- **Command**: `gnome-extensions enable memento-mori@vedeshpadal`
 
 ## ✨ Features
 
