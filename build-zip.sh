@@ -18,9 +18,10 @@ zip -r "$ZIP_FILE" \
   metadata.json \
   stylesheet.css \
   LICENSE \
+  lib/*.js \
   schemas/*.xml
 
 echo ""
-echo "✅ Created: $ZIP_FILE"
+echo "Created: $ZIP_FILE"
 echo ""
-echo "📤 Upload to: https://extensions.gnome.org/upload/"
+echo "Upload to: https://extensions.gnome.org/upload/"

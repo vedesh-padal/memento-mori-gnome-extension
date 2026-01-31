@@ -1,18 +1,4 @@
 /* prefs.js
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -25,9 +11,7 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
   fillPreferencesWindow(window) {
     const settings = this.getSettings();
 
-    // ========================================================================
-    // General Settings Page
-    // ========================================================================
+    // === General Settings Page ===
     const generalPage = new Adw.PreferencesPage({
       title: 'General',
       icon_name: 'preferences-system-symbolic',
@@ -56,7 +40,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     generalGroup.add(updateIntervalRow);
     settings.bind('update-interval', updateIntervalRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
-    // Panel position
     const panelPositionRow = new Adw.ComboRow({
       title: 'Position in Panel',
       subtitle: 'Where to show the indicator',
@@ -75,7 +58,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     });
     generalPage.add(displayGroup);
 
-    // Panel format
     const panelFormatRow = new Adw.ComboRow({
       title: 'Display Format',
       subtitle: 'How to show metrics in the panel',
@@ -88,7 +70,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       updateTimeLeftGroupVisibility();
     });
 
-    // Color code life
     const colorCodeLifeRow = new Adw.SwitchRow({
       title: 'Color Code Life Percentage',
       subtitle: '🟢 0-33%  🟡 34-66%  🔴 67-100%',
@@ -96,7 +77,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     displayGroup.add(colorCodeLifeRow);
     settings.bind('color-code-life', colorCodeLifeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    // Color code day
     const colorCodeDayRow = new Adw.SwitchRow({
       title: 'Color Code Day Percentage',
       subtitle: '🟢 0-50%  🟡 51-75%  🔴 76-100%',
@@ -153,9 +133,7 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       settings.set_int('dropdown-format', dropdownFormatRow.selected);
     });
 
-    // ========================================================================
-    // Personal Settings Page
-    // ========================================================================
+    // === Personal Settings Page ===
     const personalPage = new Adw.PreferencesPage({
       title: 'Personal',
       icon_name: 'avatar-default-symbolic',
@@ -169,7 +147,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     });
     personalPage.add(birthGroup);
 
-    // Birth year
     const birthYearRow = new Adw.SpinRow({
       title: 'Birth Year',
       subtitle: 'Your year of birth',
@@ -184,7 +161,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     birthGroup.add(birthYearRow);
     settings.bind('birth-year', birthYearRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
-    // Birth month
     const months = ['Not Set', 'January', 'February', 'March', 'April', 'May', 'June',
                     'July', 'August', 'September', 'October', 'November', 'December'];
     const birthMonthRow = new Adw.ComboRow({
@@ -199,7 +175,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       updateDayDropdown();
     });
 
-    // Birth day
     const birthDayRow = new Adw.ComboRow({
       title: 'Birth Day',
       subtitle: 'Optional - needed for birthday countdown',
@@ -253,9 +228,7 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     birthGroup.add(configuredRow);
     settings.bind('configured', configuredRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    // ========================================================================
-    // Event Countdown Page
-    // ========================================================================
+    // === Event Countdown Page ===
     const eventsPage = new Adw.PreferencesPage({
       title: 'Events',
       icon_name: 'x-office-calendar-symbolic',
@@ -288,7 +261,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     });
     eventsPage.add(customEventGroup);
 
-    // Event name
     const eventNameRow = new Adw.EntryRow({
       title: 'Event Name',
     });
@@ -298,7 +270,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       settings.set_string('custom-event-name', eventNameRow.text);
     });
 
-    // Event month
     const eventMonthRow = new Adw.ComboRow({
       title: 'Event Month',
       model: Gtk.StringList.new(months.slice(1)), // Exclude "Not Set"
@@ -310,7 +281,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       updateEventDayDropdown();
     });
 
-    // Event day
     const eventDayRow = new Adw.ComboRow({
       title: 'Event Day',
     });
@@ -336,7 +306,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       settings.set_int('custom-event-day', eventDayRow.selected + 1);
     });
 
-    // Event text
     const eventTextRow = new Adw.EntryRow({
       title: 'Display Text',
     });
@@ -346,7 +315,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       settings.set_string('custom-event-text', eventTextRow.text);
     });
 
-    // Help text
     const helpRow = new Adw.ActionRow({
       title: 'Tip',
       subtitle: 'Use {days} in your text to show the countdown number. Emojis are supported! 🎉',
@@ -358,23 +326,19 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     };
     updateCustomEventVisibility();
 
-    // ========================================================================
-    // Notifications Page
-    // ========================================================================
+    // === Notifications Page ===
     const notificationsPage = new Adw.PreferencesPage({
       title: 'Notifications',
       icon_name: 'preferences-system-notifications-symbolic',
     });
     window.add(notificationsPage);
 
-    // --- Notifications Group ---
     const notificationsGroup = new Adw.PreferencesGroup({
       title: 'Notifications',
       description: 'Get notified about time milestones',
     });
     notificationsPage.add(notificationsGroup);
 
-    // Enable notifications
     const enableNotificationsRow = new Adw.SwitchRow({
       title: 'Enable Notifications',
       subtitle: 'Show desktop notifications for milestones',
@@ -382,7 +346,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     notificationsGroup.add(enableNotificationsRow);
     settings.bind('enable-notifications', enableNotificationsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    // Quarterly
     const quarterlyRow = new Adw.SwitchRow({
       title: 'Quarterly Progress',
       subtitle: 'Notify on Jan 1, Apr 1, Jul 1, Oct 1',
@@ -390,7 +353,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     notificationsGroup.add(quarterlyRow);
     settings.bind('notify-quarterly', quarterlyRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    // Birthday
     const birthdayNotifyRow = new Adw.SwitchRow({
       title: 'Birthday Reminder',
       subtitle: 'Notify on your birthday (requires birth date)',
@@ -398,7 +360,6 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
     notificationsGroup.add(birthdayNotifyRow);
     settings.bind('notify-birthday', birthdayNotifyRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
-    // Notification style
     const notificationStyleRow = new Adw.ComboRow({
       title: 'Notification Style',
       model: Gtk.StringList.new(['Subtle', 'Prominent']),
@@ -409,9 +370,7 @@ export default class MementoMoriPreferences extends ExtensionPreferences {
       settings.set_int('notification-style', notificationStyleRow.selected);
     });
 
-    // ========================================================================
-    // About Page
-    // ========================================================================
+    // === About Page ===
     const aboutPage = new Adw.PreferencesPage({
       title: 'About',
       icon_name: 'help-about-symbolic',
