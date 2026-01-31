@@ -32,6 +32,8 @@ The extension shows progress for:
 - Event countdown (birthday or custom)
 - Quick access to settings
 
+<img src="screenshot.png" width="600" alt="Screenshot">
+
 ## 🚀 Installation
 
 ### From GNOME Extensions (Recommended)
