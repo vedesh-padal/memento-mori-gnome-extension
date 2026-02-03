@@ -18,14 +18,15 @@
 
 /* exported init, fillPreferencesWindow */
 
-const { Adw, Gtk, Gio } = imports.gi;
+const {Adw, Gtk, Gio} = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 function init() {
   // Nothing to initialize
 }
-
 function fillPreferencesWindow(window) {
+  Adw.init();
+
   const settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.memento-mori');
 
   // ========================================================================
@@ -45,9 +46,12 @@ function fillPreferencesWindow(window) {
   generalPage.add(generalGroup);
 
   // Update interval
-  const updateIntervalRow = new Adw.SpinRow({
+  const updateIntervalRow = new Adw.ActionRow({
     title: 'Update Interval',
     subtitle: 'How often to refresh (in seconds)',
+  });
+
+  const updateIntervalSpin = new Gtk.SpinButton({
     adjustment: new Gtk.Adjustment({
       lower: 10,
       upper: 300,
@@ -55,9 +59,12 @@ function fillPreferencesWindow(window) {
       page_increment: 60,
       value: settings.get_int('update-interval'),
     }),
+    valign: Gtk.Align.CENTER,
   });
+
+  updateIntervalRow.add_suffix(updateIntervalSpin);
+  updateIntervalRow.activatable_widget = updateIntervalSpin;
   generalGroup.add(updateIntervalRow);
-  settings.bind('update-interval', updateIntervalRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
   // Panel position
   const panelPositionRow = new Adw.ComboRow({
@@ -92,20 +99,32 @@ function fillPreferencesWindow(window) {
   });
 
   // Color code life
-  const colorCodeLifeRow = new Adw.SwitchRow({
+  const colorCodeLifeRow = new Adw.ActionRow({
     title: 'Color Code Life Percentage',
     subtitle: '🟢 0-33%  🟡 34-66%  🔴 67-100%',
   });
+
+  const colorCodeLifeSwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+  colorCodeLifeRow.add_suffix(colorCodeLifeSwitch);
+  colorCodeLifeRow.activatable_widget = colorCodeLifeSwitch;
   displayGroup.add(colorCodeLifeRow);
-  settings.bind('color-code-life', colorCodeLifeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind('color-code-life', colorCodeLifeSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
   // Color code day
-  const colorCodeDayRow = new Adw.SwitchRow({
+  const colorCodeDayRow = new Adw.ActionRow({
     title: 'Color Code Day Percentage',
     subtitle: '🟢 0-50%  🟡 51-75%  🔴 76-100%',
   });
+
+  const colorCodeDaySwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+  colorCodeDayRow.add_suffix(colorCodeDaySwitch);
+  colorCodeDayRow.activatable_widget = colorCodeDaySwitch;
   displayGroup.add(colorCodeDayRow);
-  settings.bind('color-code-day', colorCodeDayRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind('color-code-day', colorCodeDaySwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
   // --- Time Left Suffix Group (only visible when panel format is Percentage) ---
   const timeLeftGroup = new Adw.PreferencesGroup({
@@ -115,20 +134,26 @@ function fillPreferencesWindow(window) {
   generalPage.add(timeLeftGroup);
 
   const timeLeftMetrics = [
-    { key: 'show-left-day', title: 'Day', subtitle: 'e.g., "65% (8h left)"' },
-    { key: 'show-left-week', title: 'Week', subtitle: 'e.g., "50% (3d left)"' },
-    { key: 'show-left-month', title: 'Month', subtitle: 'e.g., "45% (16d left)"' },
-    { key: 'show-left-year', title: 'Year', subtitle: 'e.g., "8% (336d left)"' },
-    { key: 'show-left-life', title: 'Life', subtitle: 'e.g., "27% (58 yrs left)"' },
+    {key: 'show-left-day', title: 'Day', subtitle: 'e.g., "65% (8h left)"'},
+    {key: 'show-left-week', title: 'Week', subtitle: 'e.g., "50% (3d left)"'},
+    {key: 'show-left-month', title: 'Month', subtitle: 'e.g., "45% (16d left)"'},
+    {key: 'show-left-year', title: 'Year', subtitle: 'e.g., "8% (336d left)"'},
+    {key: 'show-left-life', title: 'Life', subtitle: 'e.g., "27% (58 yrs left)"'},
   ];
 
   for (const metric of timeLeftMetrics) {
-    const row = new Adw.SwitchRow({
+    const row = new Adw.ActionRow({
       title: metric.title,
       subtitle: metric.subtitle,
     });
+
+    const sw = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+    row.add_suffix(sw);
+    row.activatable_widget = sw;
     timeLeftGroup.add(row);
-    settings.bind(metric.key, row, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+    settings.bind(metric.key, sw, 'active', Gio.SettingsBindFlags.DEFAULT);
   }
 
   // Conditional visibility for time left suffix group
@@ -173,9 +198,12 @@ function fillPreferencesWindow(window) {
   personalPage.add(birthGroup);
 
   // Birth year
-  const birthYearRow = new Adw.SpinRow({
+  const birthYearRow = new Adw.ActionRow({
     title: 'Birth Year',
     subtitle: 'Your year of birth',
+  });
+
+  const birthYearSpin = new Gtk.SpinButton({
     adjustment: new Gtk.Adjustment({
       lower: 1900,
       upper: new Date().getFullYear(),
@@ -183,13 +211,24 @@ function fillPreferencesWindow(window) {
       page_increment: 10,
       value: settings.get_int('birth-year'),
     }),
+    valign: Gtk.Align.CENTER,
   });
+
+  birthYearRow.add_suffix(birthYearSpin);
+  birthYearRow.activatable_widget = birthYearSpin;
   birthGroup.add(birthYearRow);
-  settings.bind('birth-year', birthYearRow, 'value', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind(
+    'birth-year',
+    birthYearSpin,
+    'value',
+    Gio.SettingsBindFlags.DEFAULT,
+    (value) => Math.round(value),
+    (value) => value,
+  );
 
   // Birth month
-  const months = ['Not Set', 'January', 'February', 'March', 'April', 'May', 'June',
-                  'July', 'August', 'September', 'October', 'November', 'December'];
+  const months = ['Not Set', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const birthMonthRow = new Adw.ComboRow({
     title: 'Birth Month',
     subtitle: 'Optional - needed for birthday countdown',
@@ -213,30 +252,33 @@ function fillPreferencesWindow(window) {
     const month = birthMonthRow.selected;
     const year = settings.get_int('birth-year');
     let daysInMonth = 31;
-    
+
     if (month > 0) {
       daysInMonth = new Date(year, month, 0).getDate();
     }
-    
+
     const days = ['Not Set'];
     for (let i = 1; i <= daysInMonth; i++) {
       days.push(i.toString());
     }
-    
+
     birthDayRow.model = Gtk.StringList.new(days);
     const currentDay = settings.get_int('birth-day');
     birthDayRow.selected = currentDay <= daysInMonth ? currentDay : 0;
   };
-  
+
   updateDayDropdown();
   birthDayRow.connect('notify::selected', () => {
     settings.set_int('birth-day', birthDayRow.selected);
   });
 
   // Life expectancy
-  const lifeExpectancyRow = new Adw.SpinRow({
+  const lifeExpectancyRow = new Adw.ActionRow({
     title: 'Life Expectancy',
     subtitle: 'Expected lifespan in years',
+  });
+
+  const lifeExpectancySpin = new Gtk.SpinButton({
     adjustment: new Gtk.Adjustment({
       lower: 1,
       upper: 150,
@@ -244,17 +286,35 @@ function fillPreferencesWindow(window) {
       page_increment: 10,
       value: settings.get_int('life-expectancy'),
     }),
+    valign: Gtk.Align.CENTER,
   });
+
+  lifeExpectancyRow.add_suffix(lifeExpectancySpin);
+  lifeExpectancyRow.activatable_widget = lifeExpectancySpin;
   birthGroup.add(lifeExpectancyRow);
-  settings.bind('life-expectancy', lifeExpectancyRow, 'value', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind(
+    'life-expectancy',
+    lifeExpectancySpin,
+    'value',
+    Gio.SettingsBindFlags.DEFAULT,
+    (value) => Math.round(value),
+    (value) => value,
+  );
 
   // Enable tracking button
-  const configuredRow = new Adw.SwitchRow({
+  const configuredRow = new Adw.ActionRow({
     title: 'Enable Time Tracking',
     subtitle: 'Start displaying progress percentages',
   });
+
+  const configuredSwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+  configuredRow.add_suffix(configuredSwitch);
+  configuredRow.activatable_widget = configuredSwitch;
   birthGroup.add(configuredRow);
-  settings.bind('configured', configuredRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind('configured', configuredSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
   // ========================================================================
   // Event Countdown Page
@@ -292,13 +352,21 @@ function fillPreferencesWindow(window) {
   eventsPage.add(customEventGroup);
 
   // Event name
-  const eventNameRow = new Adw.EntryRow({
+  const eventNameRow = new Adw.ActionRow({
     title: 'Event Name',
   });
-  eventNameRow.text = settings.get_string('custom-event-name');
+
+  const eventNameEntry = new Gtk.Entry({
+    text: settings.get_string('custom-event-name'),
+    valign: Gtk.Align.CENTER,
+  });
+
+  eventNameRow.add_suffix(eventNameEntry);
+  eventNameRow.activatable_widget = eventNameEntry;
   customEventGroup.add(eventNameRow);
-  eventNameRow.connect('changed', () => {
-    settings.set_string('custom-event-name', eventNameRow.text);
+
+  eventNameEntry.connect('changed', () => {
+    settings.set_string('custom-event-name', eventNameEntry.text);
   });
 
   // Event month
@@ -323,30 +391,38 @@ function fillPreferencesWindow(window) {
     const month = eventMonthRow.selected + 1;
     const year = new Date().getFullYear();
     const daysInMonth = new Date(year, month, 0).getDate();
-    
+
     const days = [];
     for (let i = 1; i <= daysInMonth; i++) {
       days.push(i.toString());
     }
-    
+
     eventDayRow.model = Gtk.StringList.new(days);
     const currentDay = settings.get_int('custom-event-day');
     eventDayRow.selected = Math.min(currentDay - 1, daysInMonth - 1);
   };
-  
+
   updateEventDayDropdown();
   eventDayRow.connect('notify::selected', () => {
     settings.set_int('custom-event-day', eventDayRow.selected + 1);
   });
 
   // Event text
-  const eventTextRow = new Adw.EntryRow({
+  const eventTextRow = new Adw.ActionRow({
     title: 'Display Text',
   });
-  eventTextRow.text = settings.get_string('custom-event-text');
+
+  const eventTextEntry = new Gtk.Entry({
+    text: settings.get_string('custom-event-text'),
+    valign: Gtk.Align.CENTER,
+  });
+
+  eventTextRow.add_suffix(eventTextEntry);
+  eventTextRow.activatable_widget = eventTextEntry;
   customEventGroup.add(eventTextRow);
-  eventTextRow.connect('changed', () => {
-    settings.set_string('custom-event-text', eventTextRow.text);
+
+  eventTextEntry.connect('changed', () => {
+    settings.set_string('custom-event-text', eventTextEntry.text);
   });
 
   // Help text
@@ -378,28 +454,46 @@ function fillPreferencesWindow(window) {
   notificationsPage.add(notificationsGroup);
 
   // Enable notifications
-  const enableNotificationsRow = new Adw.SwitchRow({
+  const enableNotificationsRow = new Adw.ActionRow({
     title: 'Enable Notifications',
     subtitle: 'Show desktop notifications for milestones',
   });
+
+  const enableNotificationsSwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+  enableNotificationsRow.add_suffix(enableNotificationsSwitch);
+  enableNotificationsRow.activatable_widget = enableNotificationsSwitch;
   notificationsGroup.add(enableNotificationsRow);
-  settings.bind('enable-notifications', enableNotificationsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind('enable-notifications', enableNotificationsSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
   // Quarterly
-  const quarterlyRow = new Adw.SwitchRow({
+  const quarterlyRow = new Adw.ActionRow({
     title: 'Quarterly Progress',
     subtitle: 'Notify on Jan 1, Apr 1, Jul 1, Oct 1',
   });
+
+  const quarterlySwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+  quarterlyRow.add_suffix(quarterlySwitch);
+  quarterlyRow.activatable_widget = quarterlySwitch;
   notificationsGroup.add(quarterlyRow);
-  settings.bind('notify-quarterly', quarterlyRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind('notify-quarterly', quarterlySwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
   // Birthday
-  const birthdayNotifyRow = new Adw.SwitchRow({
+  const birthdayNotifyRow = new Adw.ActionRow({
     title: 'Birthday Reminder',
     subtitle: 'Notify on your birthday (requires birth date)',
   });
+
+  const birthdayNotifySwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+
+  birthdayNotifyRow.add_suffix(birthdayNotifySwitch);
+  birthdayNotifyRow.activatable_widget = birthdayNotifySwitch;
   notificationsGroup.add(birthdayNotifyRow);
-  settings.bind('notify-birthday', birthdayNotifyRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
+  settings.bind('notify-birthday', birthdayNotifySwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
 
   // Notification style
   const notificationStyleRow = new Adw.ComboRow({
@@ -437,9 +531,11 @@ function fillPreferencesWindow(window) {
     subtitle: 'github.com/vedesh-padal/memento-mori-gnome-extension',
     activatable: true,
   });
-  githubRow.add_suffix(new Gtk.Image({
-    icon_name: 'go-next-symbolic',
-  }));
+  githubRow.add_suffix(
+    new Gtk.Image({
+      icon_name: 'go-next-symbolic',
+    }),
+  );
   aboutGroup.add(githubRow);
   githubRow.connect('activated', () => {
     Gio.AppInfo.launch_default_for_uri('https://github.com/vedesh-padal/memento-mori-gnome-extension', null);
@@ -447,7 +543,7 @@ function fillPreferencesWindow(window) {
 
   const creditsRow = new Adw.ActionRow({
     title: 'Credits',
-    subtitle: 'Inspired by Pankaj Tanwar\'s original implementation',
+    subtitle: "Inspired by Pankaj Tanwar's original implementation",
   });
   aboutGroup.add(creditsRow);
 
