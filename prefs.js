@@ -18,7 +18,7 @@
 
 /* exported init, fillPreferencesWindow */
 
-const {Adw, Gtk, Gio} = imports.gi;
+const { Adw, Gtk, Gio } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 function init() {
@@ -104,7 +104,7 @@ function fillPreferencesWindow(window) {
     subtitle: '🟢 0-33%  🟡 34-66%  🔴 67-100%',
   });
 
-  const colorCodeLifeSwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+  const colorCodeLifeSwitch = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
   colorCodeLifeRow.add_suffix(colorCodeLifeSwitch);
   colorCodeLifeRow.activatable_widget = colorCodeLifeSwitch;
@@ -118,7 +118,7 @@ function fillPreferencesWindow(window) {
     subtitle: '🟢 0-50%  🟡 51-75%  🔴 76-100%',
   });
 
-  const colorCodeDaySwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+  const colorCodeDaySwitch = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
   colorCodeDayRow.add_suffix(colorCodeDaySwitch);
   colorCodeDayRow.activatable_widget = colorCodeDaySwitch;
@@ -134,11 +134,11 @@ function fillPreferencesWindow(window) {
   generalPage.add(timeLeftGroup);
 
   const timeLeftMetrics = [
-    {key: 'show-left-day', title: 'Day', subtitle: 'e.g., "65% (8h left)"'},
-    {key: 'show-left-week', title: 'Week', subtitle: 'e.g., "50% (3d left)"'},
-    {key: 'show-left-month', title: 'Month', subtitle: 'e.g., "45% (16d left)"'},
-    {key: 'show-left-year', title: 'Year', subtitle: 'e.g., "8% (336d left)"'},
-    {key: 'show-left-life', title: 'Life', subtitle: 'e.g., "27% (58 yrs left)"'},
+    { key: 'show-left-day', title: 'Day', subtitle: 'e.g., "65% (8h left)"' },
+    { key: 'show-left-week', title: 'Week', subtitle: 'e.g., "50% (3d left)"' },
+    { key: 'show-left-month', title: 'Month', subtitle: 'e.g., "45% (16d left)"' },
+    { key: 'show-left-year', title: 'Year', subtitle: 'e.g., "8% (336d left)"' },
+    { key: 'show-left-life', title: 'Life', subtitle: 'e.g., "27% (58 yrs left)"' },
   ];
 
   for (const metric of timeLeftMetrics) {
@@ -147,7 +147,7 @@ function fillPreferencesWindow(window) {
       subtitle: metric.subtitle,
     });
 
-    const sw = new Gtk.Switch({valign: Gtk.Align.CENTER});
+    const sw = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
     row.add_suffix(sw);
     row.activatable_widget = sw;
@@ -228,7 +228,21 @@ function fillPreferencesWindow(window) {
   );
 
   // Birth month
-  const months = ['Not Set', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const months = [
+    'Not Set',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const birthMonthRow = new Adw.ComboRow({
     title: 'Birth Month',
     subtitle: 'Optional - needed for birthday countdown',
@@ -308,7 +322,7 @@ function fillPreferencesWindow(window) {
     subtitle: 'Start displaying progress percentages',
   });
 
-  const configuredSwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+  const configuredSwitch = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
   configuredRow.add_suffix(configuredSwitch);
   configuredRow.activatable_widget = configuredSwitch;
@@ -459,7 +473,7 @@ function fillPreferencesWindow(window) {
     subtitle: 'Show desktop notifications for milestones',
   });
 
-  const enableNotificationsSwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+  const enableNotificationsSwitch = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
   enableNotificationsRow.add_suffix(enableNotificationsSwitch);
   enableNotificationsRow.activatable_widget = enableNotificationsSwitch;
@@ -473,7 +487,7 @@ function fillPreferencesWindow(window) {
     subtitle: 'Notify on Jan 1, Apr 1, Jul 1, Oct 1',
   });
 
-  const quarterlySwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+  const quarterlySwitch = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
   quarterlyRow.add_suffix(quarterlySwitch);
   quarterlyRow.activatable_widget = quarterlySwitch;
@@ -487,7 +501,7 @@ function fillPreferencesWindow(window) {
     subtitle: 'Notify on your birthday (requires birth date)',
   });
 
-  const birthdayNotifySwitch = new Gtk.Switch({valign: Gtk.Align.CENTER});
+  const birthdayNotifySwitch = new Gtk.Switch({ valign: Gtk.Align.CENTER });
 
   birthdayNotifyRow.add_suffix(birthdayNotifySwitch);
   birthdayNotifyRow.activatable_widget = birthdayNotifySwitch;
