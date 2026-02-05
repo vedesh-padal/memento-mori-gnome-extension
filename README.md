@@ -2,6 +2,10 @@
 
 > _"Remember that you must die"_ ~ Memento Mori
 
+> ⚠️ **This branch is for GNOME 45 & above (Ubuntu 24.04 LTS & above)**
+>
+> For GNOME 42-44 (Ubuntu 22.04+), use the [`legacy-gnome-42-44` branch](https://github.com/vedesh-padal/memento-mori-gnome-extension/tree/legacy-gnome-42-44).
+
 A GNOME Shell extension that displays how much of your **day**, **week**, **month**, **year**, and **life** has passed in the top panel. A gentle reminder to make the most of your time.
 
 ![GNOME 49](https://img.shields.io/badge/GNOME-45--49-blue?logo=gnome)
