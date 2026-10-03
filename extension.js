@@ -4,6 +4,8 @@
 
 import St from 'gi://St';
 import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import Shell from 'gi://Shell';
 import Clutter from 'gi://Clutter';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -26,6 +28,10 @@ import { MetricToggleItem } from './lib/widgets.js';
 export default class MementoMoriExtension extends Extension {
   enable() {
     this._settings = this.getSettings();
+    // 'week-start-day' was added in GNOME 50; older shells only have the locale
+    const calendarSchema = Gio.SettingsSchemaSource.get_default().lookup('org.gnome.desktop.calendar', true);
+    if (calendarSchema?.has_key('week-start-day'))
+      this._calendarSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.calendar'});
     // Panel indicator
     this._indicator = new PanelMenu.Button(0.0, 'Memento Mori', false);
     
@@ -220,7 +226,7 @@ export default class MementoMoriExtension extends Extension {
     const birthDay = this._settings.get_int('birth-day');
     const lifeExpectancy = this._settings.get_int('life-expectancy');
     
-    const progress = calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy);
+    const progress = calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy, this._getWeekStart());
     
     this._updatePanelLabel(progress);
     this._updateDropdownItems(progress);
@@ -399,6 +405,12 @@ export default class MementoMoriExtension extends Extension {
     }
   }
   
+  // Same logic as GNOME Shell's calendar: enum default=0, monday=1 .. sunday=7
+  _getWeekStart() {
+    const day = this._calendarSettings?.get_enum('week-start-day') ?? 0;
+    return day === 0 ? Shell.util_get_week_start() : day % 7;
+  }
+
   disable() {
     if (this._timeout) {
       GLib.Source.remove(this._timeout);
@@ -464,6 +476,7 @@ export default class MementoMoriExtension extends Extension {
       this._indicator = null;
     }
     
+    this._calendarSettings = null;
     this._settings = null;
   }
 }
