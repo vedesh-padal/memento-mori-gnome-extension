@@ -8,6 +8,8 @@ EXT_DIR="$HOME/.local/share/gnome-shell/extensions/$EXT_UUID"
 
 echo "📦 Installing Memento Mori extension..."
 
+# Fresh install: drop stale files and any pending store update that would overwrite this build on next login
+rm -rf "$EXT_DIR" "$HOME/.local/share/gnome-shell/extension-updates/$EXT_UUID"
 mkdir -p "$EXT_DIR/schemas" "$EXT_DIR/lib"
 
 cp extension.js prefs.js metadata.json stylesheet.css "$EXT_DIR/"
