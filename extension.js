@@ -29,8 +29,10 @@ export default class MementoMoriExtension extends Extension {
     this._settings = this.getSettings();
     // 'week-start-day' was added in GNOME 50; older shells only have the locale
     const calendarSchema = Gio.SettingsSchemaSource.get_default().lookup('org.gnome.desktop.calendar', true);
-    if (calendarSchema?.has_key('week-start-day'))
+    if (calendarSchema?.has_key('week-start-day')) {
       this._calendarSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.calendar'});
+      this._weekStartChangedId = this._calendarSettings.connect('changed::week-start-day', () => this._updateDisplay());
+    }
     // Panel indicator
     this._indicator = new PanelMenu.Button(0.0, 'Memento Mori', false);
     
@@ -475,6 +477,10 @@ export default class MementoMoriExtension extends Extension {
       this._indicator = null;
     }
     
+    if (this._weekStartChangedId) {
+      this._calendarSettings.disconnect(this._weekStartChangedId);
+      this._weekStartChangedId = null;
+    }
     this._calendarSettings = null;
     this._settings = null;
   }
