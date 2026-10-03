@@ -4,6 +4,7 @@
 
 import St from 'gi://St';
 import GLib from 'gi://GLib';
+import Shell from 'gi://Shell';
 import Clutter from 'gi://Clutter';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -220,7 +221,7 @@ export default class MementoMoriExtension extends Extension {
     const birthDay = this._settings.get_int('birth-day');
     const lifeExpectancy = this._settings.get_int('life-expectancy');
     
-    const progress = calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy);
+    const progress = calculateAllProgress(birthYear, birthMonth, birthDay, lifeExpectancy, Shell.util_get_week_start());
     
     this._updatePanelLabel(progress);
     this._updateDropdownItems(progress);
