@@ -154,7 +154,7 @@ export default class MementoMoriExtension extends Extension {
     });
     settingsButton.connect('clicked', () => {
       this._indicator.menu.close();
-      this.openPreferences();
+      this.openPreferences().catch(logError);
     });
     actionsBox.add_child(settingsButton);
     
