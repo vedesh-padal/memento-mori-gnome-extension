@@ -412,18 +412,58 @@ export default class MementoMoriExtension extends Extension {
       this._settingsChangedIds = null;
     }
     
+    // 1. Destroy specific child labels and countdown menu items
+    if (this._countdownLabel) {
+      this._countdownLabel.destroy();
+      this._countdownLabel = null;
+    }
+    
+    if (this._countdownItem) {
+      this._countdownItem.destroy();
+      this._countdownItem = null;
+    }
+    
+    if (this._hourglassLabel) {
+      this._hourglassLabel.destroy();
+      this._hourglassLabel = null;
+    }
+    
+    if (this._placeholderLabel) {
+      this._placeholderLabel.destroy();
+      this._placeholderLabel = null;
+    }
+    
+    // 2. Iterate and destroy dynamically registered labels in the dictionary
+    if (this._metricLabels) {
+      for (const key in this._metricLabels) {
+        if (this._metricLabels[key]) {
+          this._metricLabels[key].destroy();
+        }
+      }
+      this._metricLabels = null;
+    }
+    
+    // 3. Iterate and destroy dynamically registered menu toggles in the dictionary
+    if (this._metricItems) {
+      for (const key in this._metricItems) {
+        if (this._metricItems[key]) {
+          this._metricItems[key].destroy();
+        }
+      }
+      this._metricItems = null;
+    }
+    
+    // 4. Destroy the main layouts
+    if (this._panelBox) {
+      this._panelBox.destroy();
+      this._panelBox = null;
+    }
+    
     if (this._indicator) {
       this._indicator.destroy();
       this._indicator = null;
     }
     
-    this._panelBox = null;
-    this._hourglassLabel = null;
-    this._metricLabels = null;
-    this._placeholderLabel = null;
-    this._metricItems = null;
-    this._countdownItem = null;
-    this._countdownLabel = null;
     this._settings = null;
   }
 }
