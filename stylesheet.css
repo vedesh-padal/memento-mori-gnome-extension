@@ -1,18 +1,5 @@
 /* Memento Mori Extension Stylesheet */
 
-/* Panel label color classes for Life metric */
-.memento-mori-life-green {
-  color: #73d216 !important;
-}
-
-.memento-mori-life-yellow {
-  color: #edd400 !important;
-}
-
-.memento-mori-life-red {
-  color: #ef2929 !important;
-}
-
 /* Dropdown menu styling */
 .memento-mori-header {
   font-weight: bold;

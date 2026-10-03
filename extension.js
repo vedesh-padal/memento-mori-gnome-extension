@@ -16,8 +16,7 @@ import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import {
   calculateAllProgress,
   getDaysUntilEvent,
-  getLifeColorClass,
-  getDayColorClass,
+  getProgressColor,
 } from './lib/calculations.js';
 import { MetricToggleItem } from './lib/widgets.js';
 
@@ -294,11 +293,11 @@ export default class MementoMoriExtension extends Extension {
       
       // Apply color coding
       if (metric.key === 'life' && colorCodeLife) {
-        label.style_class = getLifeColorClass(progress.life.percent);
+        label.set_style(getProgressColor(progress.life.percent));
       } else if (metric.key === 'day' && colorCodeDay) {
-        label.style_class = getDayColorClass(progress.day.percent);
+        label.set_style(getProgressColor(progress.day.percent));
       } else {
-        label.style_class = '';
+        label.set_style(null);
       }
     }
     
