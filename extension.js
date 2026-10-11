@@ -27,7 +27,6 @@ import { MetricToggleItem } from './lib/widgets.js';
 export default class MementoMoriExtension extends Extension {
   enable() {
     this._settings = this.getSettings();
-    // 'week-start-day' was added in GNOME 50; older shells only have the locale
     const calendarSchema = Gio.SettingsSchemaSource.get_default().lookup('org.gnome.desktop.calendar', true);
     if (calendarSchema?.has_key('week-start-day')) {
       this._calendarSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.calendar'});
@@ -406,7 +405,6 @@ export default class MementoMoriExtension extends Extension {
     }
   }
   
-  // Same logic as GNOME Shell's calendar: enum default=0, monday=1 .. sunday=7
   _getWeekStart() {
     const day = this._calendarSettings?.get_enum('week-start-day') ?? 0;
     return day === 0 ? Shell.util_get_week_start() : day % 7;
@@ -425,7 +423,6 @@ export default class MementoMoriExtension extends Extension {
       this._settingsChangedIds = null;
     }
     
-    // 1. Destroy specific child labels and countdown menu items
     if (this._countdownLabel) {
       this._countdownLabel.destroy();
       this._countdownLabel = null;
@@ -446,7 +443,6 @@ export default class MementoMoriExtension extends Extension {
       this._placeholderLabel = null;
     }
     
-    // 2. Iterate and destroy dynamically registered labels in the dictionary
     if (this._metricLabels) {
       for (const key in this._metricLabels) {
         if (this._metricLabels[key]) {
@@ -456,7 +452,6 @@ export default class MementoMoriExtension extends Extension {
       this._metricLabels = null;
     }
     
-    // 3. Iterate and destroy dynamically registered menu toggles in the dictionary
     if (this._metricItems) {
       for (const key in this._metricItems) {
         if (this._metricItems[key]) {
@@ -466,7 +461,6 @@ export default class MementoMoriExtension extends Extension {
       this._metricItems = null;
     }
     
-    // 4. Destroy the main layouts
     if (this._panelBox) {
       this._panelBox.destroy();
       this._panelBox = null;
